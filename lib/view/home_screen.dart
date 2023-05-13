@@ -21,13 +21,29 @@ class _HomeScreenState extends State<HomeScreen> {
   TextEditingController dateOfBirth = TextEditingController();
   TextEditingController other = TextEditingController();
   TextEditingController occupation = TextEditingController();
-  TextEditingController salutationController = TextEditingController();
 
+  DateTime? selectedDate;
   late String dropdownValue;
   bool isLoading = true;
   TitleForDopDown? loadedData;
   List<String> salutationList = <String>[];
   bool isMale = true;
+
+  InputDecoration inputDecoration = InputDecoration(
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12.0),
+      borderSide:
+      const BorderSide(color: Colors.blueGrey, width: 1),
+    ),
+    disabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12.0),
+      borderSide: const BorderSide(color: Colors.blueGrey,width: 1),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12.0),
+      borderSide: const BorderSide(color: Colors.blueGrey, width: 1.0),
+    ),
+  );
 
   Future<void> data() async {
     http.Response res = await http.get(Uri.parse("https://api.probusinsurance.com/api/Motor/PrivateCar/Salutation?companyCode=DIGIT"));
@@ -52,10 +68,8 @@ class _HomeScreenState extends State<HomeScreen> {
     data();
   }
 
-  DateTime? selectedDate;
-
-  void presentDatePicker() {
-    showDatePicker(
+  Future<void> presentDatePicker() async {
+    DateTime? pickedDate = await showDatePicker(
             context: context,
             initialDate: DateTime.now(),
             firstDate: DateTime(1950),
@@ -68,39 +82,39 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: child!);
             },
             lastDate: DateTime.now(),
-    )
-        .then((pickedDate) {
-          if(pickedDate != null) {
-            setState(() {
-              selectedDate = pickedDate;
-              String formattedDate = DateFormat('dd MMM yyyy').format(pickedDate);
-              dateOfBirth.text = formattedDate;
-            });
-          }
-    });
+    );
+    if(pickedDate != null) {
+      setState(() {
+        selectedDate = pickedDate;
+        String formattedDate = DateFormat('dd MMM yyyy').format(pickedDate);
+        dateOfBirth.text = formattedDate;
+      });
+    }
   }
 
   final _form = GlobalKey<FormState>();
 
   void _submit() {
-    final isValid = _form.currentState!.validate();
+    final isValid = _form.currentState!.validate() && dateOfBirth.text.isNotEmpty;
     if (isValid) {
       debugPrint("Line83:");
       final PersonalDetailData personalDetailData = PersonalDetailData(
-        firstName: firstName.text,
-        middleName: middleName.text,
-        lastName: lastName.text,
-        dateOfBirth: dateOfBirth.text,
-        gender: dropdownValue,
-        other: other.text,
-        occupation: occupation.text,
+        salutation: dropdownValue??'',
+        firstName: firstName.text??"",
+        middleName: middleName.text??'',
+        lastName: lastName.text??'',
+        dateOfBirth: dateOfBirth.text??"",
+        gender: isMale?'Male':'Female',
+        other: other.text??'',
+        occupation: occupation.text??'',
       );
-    print(personalDetailData.firstName);
-    print(personalDetailData.middleName);
-    print(personalDetailData.lastName);
-    print(personalDetailData.dateOfBirth);
-    print(personalDetailData.other);
-    print(personalDetailData.occupation);
+      debugPrint(personalDetailData.firstName);
+      debugPrint(personalDetailData.middleName);
+      debugPrint(personalDetailData.lastName);
+      debugPrint(personalDetailData.dateOfBirth);
+      debugPrint(personalDetailData.gender);
+      debugPrint(personalDetailData.other);
+      debugPrint(personalDetailData.occupation);
     }
   }
 
@@ -164,33 +178,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         const SizedBox(
-                          height: 10,
+                          height: 18,
                         ),
                         TextFormField(
                           controller: firstName,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: const BorderSide(
-                                  color: Colors.blueGrey, width: 15),
-                            ),
-                            disabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: const BorderSide(
-                                  color: Colors.blueGrey, width: 1),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: const BorderSide(
-                                  color: Colors.blueGrey, width: 1.0),
-                            ),
-                            // border: InputBorder.none,
+                          decoration: inputDecoration.copyWith(
                             labelText: 'First Name',
-                            labelStyle: const TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.black),
+                            hintText: 'First Name'
                           ),
-                          keyboardType: TextInputType.emailAddress,
                           autocorrect: false,
-                          textCapitalization: TextCapitalization.none,
+                          textCapitalization: TextCapitalization.sentences,
                           validator: (value) {
                             if (value == null ) {
                               return 'Please enter some text';
@@ -204,31 +201,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                         ),
                         const SizedBox(
-                          height: 15,
+                          height: 18.0,
                         ),
                         TextFormField(
                           controller: middleName,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            disabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide:
-                                  const BorderSide(color: Colors.blueGrey),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: const BorderSide(
-                                  color: Colors.blueGrey, width: 1.0),
-                            ),
-                            labelText: 'Middle Name',
-                            labelStyle: const TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.black),
+                          decoration: inputDecoration.copyWith(
+                              labelText: 'Middle Name',
+                              hintText: 'Middle Name'
                           ),
-
-
                           autocorrect: false,
-                          textCapitalization: TextCapitalization.none,
+                          textCapitalization: TextCapitalization.sentences,
                           validator: (value) {
                             if (value == null ) {
                               return 'Please enter some text';
@@ -237,37 +219,19 @@ class _HomeScreenState extends State<HomeScreen> {
                             }
                             return null;
                           },
-                          // onSaved: (value){
-                          //   _enteredEmail = value!;
-                          // },
+
                         ),
                         const SizedBox(
-                          height: 15,
+                          height: 18,
                         ),
                         TextFormField(
                           controller: lastName,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                                  const BorderSide(color: Colors.blueGrey),
-                            ),
-                            disabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide:
-                                  const BorderSide(color: Colors.blueGrey),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: const BorderSide(
-                                  color: Colors.blueGrey, width: 1.0),
-                            ),
-                            labelText: 'Last Name',
-                            labelStyle: const TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.black),
+                          decoration: inputDecoration.copyWith(
+                              labelText: 'Last Name',
+                              hintText: 'Last Name'
                           ),
-                          keyboardType: TextInputType.emailAddress,
                           autocorrect: false,
-                          textCapitalization: TextCapitalization.none,
+                          textCapitalization: TextCapitalization.sentences,
                           validator: (value) {
                             if (value == null ) {
                               return 'Please enter some text';
@@ -276,17 +240,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             }
                             return null;
                           },
-                          onChanged: (e) {
-                            setState(() {
-                              _form.currentState!.validate();
-                            });
-                          },
-                          // onSaved: (value){
-                          //   _enteredEmail = value!;
-                          // },
+
                         ),
                         const SizedBox(
-                          height: 15,
+                          height: 18,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -305,7 +262,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             const SizedBox(width: 20.0),
                             CustomRadioButton(
                               label: 'Female',
-
                               isSelected: !isMale,
                               onTap: () {
                                 if (isMale) {
@@ -318,109 +274,84 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                         const SizedBox(
-                          height: 15,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            debugPrint("Line262: ");
-                            presentDatePicker();
-                          },
-                          child: Ink(
-                            child: TextFormField(
-                              controller: dateOfBirth,
-                              enabled: false,
-                              // onTap: () {
-                              //   debugPrint("Line262: ");
-                              //   presentDatePicker();
-                              // },
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide:
-                                      const BorderSide(color: Colors.blueGrey),
-                                ),
-                                disabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  borderSide:
-                                      const BorderSide(color: Colors.blueGrey),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  borderSide: const BorderSide(
-                                      color: Colors.blueGrey, width: 1.0),
-                                ),
-                               hintText: selectedDate != null
-                                    ? selectedDate.toString().split(" ").first
-                                    : "Date Of Birth",
-                                labelText: "Date of birth",
-                                labelStyle: const TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.black),
-                                suffixIcon: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                      child: (selectedDate==null)?const SizedBox.shrink():Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(16.0),
-                                          color: Colors.blueGrey[100]
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
-                                          child: Text(
-                                            '${DateTime.now().year - selectedDate!.year}' "${(DateTime.now().year - selectedDate!.year)>1 ? ' Years':' Year'}",style: const TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 13
-                                          ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const Icon(Icons.calendar_month,color: Color(0xff00B8CD),),
-                                    const SizedBox(width: 16.0)
-                                  ],
-                                ),
-                              ),
-                              keyboardType: TextInputType.emailAddress,
-                              autocorrect: false,
-                              textCapitalization: TextCapitalization.sentences,
-                              validator: (value) {
-                                if (value == null ) {
-                                  return 'Please enter some text';
-                                } else if(value.trim().isEmpty){
-                                  return 'Please enter some text';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
+                          height: 18,
                         ),
                         TextFormField(
-                          controller: other,
+                          controller: dateOfBirth,
+                          readOnly: true,
+                          autofocus: false,
+                          onTap: () async {
+                            await presentDatePicker();
+                          },
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
+                              borderRadius: BorderRadius.circular(12),
                               borderSide:
-                                  const BorderSide(color: Colors.blueGrey),
+                                  const BorderSide(color: Colors.blueGrey, width: 1.0),
                             ),
                             disabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12.0),
                               borderSide:
-                                  const BorderSide(color: Colors.blueGrey),
+                                  const BorderSide(color: Colors.blueGrey,width: 1),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12.0),
                               borderSide: const BorderSide(
                                   color: Colors.blueGrey, width: 1.0),
                             ),
-                            labelText: 'Other',
-                            labelStyle: const TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.black),
+                           hintText: "Date of Birth",
+                            labelText: "Date of Birth",
+                            // labelStyle: const TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.black),
+                            suffixIcon: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: (selectedDate==null)?const SizedBox.shrink():Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16.0),
+                                      color: Colors.blueGrey[100]
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
+                                      child: Text(
+                                        '${DateTime.now().year - selectedDate!.year}' "${(DateTime.now().year - selectedDate!.year)>1 ? ' Years':' Year'}",style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 13
+                                      ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const Icon(Icons.calendar_month,color: Color(0xff00B8CD),),
+                                const SizedBox(width: 16.0)
+                              ],
+                            ),
+                          ),
+                          validator: (value) {
+                            if(value==null){
+                              return 'Please enter some text';
+                            } else if(value.isEmpty){
+                              return 'Please enter some text';
+                            } else {
+                              return null;
+                            }
+                        },
+                          autocorrect: false,
+                          textCapitalization: TextCapitalization.sentences,
+                        ),
+                        const SizedBox(
+                          height: 18,
+                        ),
+                        TextFormField(
+                          controller: other,
+                          decoration: inputDecoration.copyWith(
+                              labelText: 'Other',
+                              hintText: 'Other'
                           ),
                           autocorrect: false,
-                          textCapitalization: TextCapitalization.none,
+                          textCapitalization: TextCapitalization.sentences,
                           validator: (value) {
                             if (value == null ) {
                               return 'Please enter some text';
@@ -432,32 +363,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         ),
                         const SizedBox(
-                          height: 15,
+                          height: 18,
                         ),
                         TextFormField(
                           controller: occupation,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide:
-                                  const BorderSide(color: Colors.blueGrey),
-                            ),
-                            disabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide:
-                                  const BorderSide(color: Colors.blueGrey),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: const BorderSide(
-                                  color: Colors.blueGrey, width: 1.0),
-                            ),
-                            labelText: 'Occupation',
-                            labelStyle: const TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.black),
+                          decoration: inputDecoration.copyWith(
+                              labelText: 'Occupation',
+                              hintText: 'Occupation'
                           ),
-                          keyboardType: TextInputType.emailAddress,
                           autocorrect: false,
-                          textCapitalization: TextCapitalization.none,
+                          textCapitalization: TextCapitalization.sentences,
                           validator: (value) {
                             if (value == null ) {
                               return 'Please enter some text';
@@ -483,7 +398,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: const Color(0xff00B8CD),
-                    backgroundColor: (_form.currentState!.validate())?const Color(0xff00B8CD):Colors.grey[400]
+                    backgroundColor: ((_form.currentState?.validate()??false) && dateOfBirth.text.isNotEmpty)?const Color(0xff00B8CD):Colors.grey[400]
                   ),
                   child: const Text(
                     "Next",
