@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 import '../modal.dart';
 import '../personal_detail_data.dart';
 import 'custom_radio_button.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -20,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   TextEditingController other = TextEditingController();
   TextEditingController occupation = TextEditingController();
   TextEditingController salutationController = TextEditingController();
+
   late String dropdownValue;
   bool isLoading = true;
   TitleForDopDown? loadedData;
@@ -60,16 +63,21 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (context, child) {
               return Theme(
                   data: ThemeData().copyWith(
-                      colorScheme: ColorScheme.light(
+                      colorScheme: const ColorScheme.light(
                     primary: Color(0xff00B8CD),
                   )),
                   child: child!);
             },
-            lastDate: DateTime.now())
+            lastDate: DateTime.now(),
+    )
         .then((pickedDate) {
-      setState(() {
-        selectedDate = pickedDate;
-      });
+          if(pickedDate != null) {
+            setState(() {
+              selectedDate = pickedDate;
+              String formattedDate = DateFormat('dd MMM yyyy').format(pickedDate);
+              dateOfBirth.text = formattedDate;
+            });
+          }
     });
   }
 
@@ -77,18 +85,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _submit() {
     final isValid = _form.currentState!.validate();
-    debugPrint("Line81: $isValid");
     if (isValid) {
-      debugPrint("Line81:");
+      debugPrint("Line83:");
       final PersonalDetailData personalDetailData = PersonalDetailData(
         firstName: firstName.text,
         middleName: middleName.text,
         lastName: lastName.text,
         dateOfBirth: dateOfBirth.text,
-        gender: salutationController.text,
+        gender: dropdownValue,
         other: other.text,
         occupation: occupation.text,
       );
+    print(personalDetailData.firstName);
+    print(personalDetailData.middleName);
+    print(personalDetailData.lastName);
+    print(personalDetailData.dateOfBirth);
+    print(personalDetailData.other);
+    print(personalDetailData.occupation);
     }
   }
 
@@ -128,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Container(
                           decoration: BoxDecoration(
                               border: Border.all(color: Colors.blueGrey),
-                              borderRadius: BorderRadius.circular(10.0)),
+                              borderRadius: BorderRadius.circular(12.0)),
                           child: Padding(
                             padding: const EdgeInsets.only(
                                 top: 4.0, bottom: 4.0, left: 10.0),
@@ -145,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   .map<DropdownMenuItem<String>>((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
-                                  child: Text(value),
+                                  child: Text(value,style:const TextStyle(fontSize: 18,fontWeight: FontWeight.w400),),
                                 );
                               }).toList(),
                             ),
@@ -158,21 +171,31 @@ class _HomeScreenState extends State<HomeScreen> {
                           controller: firstName,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
+                              borderRadius: BorderRadius.circular(12.0),
                               borderSide: const BorderSide(
                                   color: Colors.blueGrey, width: 15),
                             ),
                             disabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
+                              borderRadius: BorderRadius.circular(12.0),
+                              borderSide: const BorderSide(
+                                  color: Colors.blueGrey, width: 1),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                              borderSide: const BorderSide(
+                                  color: Colors.blueGrey, width: 1.0),
                             ),
                             // border: InputBorder.none,
                             labelText: 'First Name',
+                            labelStyle: const TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.black),
                           ),
                           keyboardType: TextInputType.emailAddress,
                           autocorrect: false,
                           textCapitalization: TextCapitalization.none,
                           validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
+                            if (value == null ) {
+                              return 'Please enter some text';
+                            } else if(value.trim().isEmpty){
                               return 'Please enter some text';
                             }
                             return null;
@@ -188,21 +211,29 @@ class _HomeScreenState extends State<HomeScreen> {
                           controller: middleName,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
+                              borderRadius: BorderRadius.circular(12.0),
                             ),
                             disabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
+                              borderRadius: BorderRadius.circular(12.0),
                               borderSide:
                                   const BorderSide(color: Colors.blueGrey),
                             ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                              borderSide: const BorderSide(
+                                  color: Colors.blueGrey, width: 1.0),
+                            ),
                             labelText: 'Middle Name',
+                            labelStyle: const TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.black),
                           ),
 
-                          keyboardType: TextInputType.emailAddress,
+
                           autocorrect: false,
                           textCapitalization: TextCapitalization.none,
                           validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
+                            if (value == null ) {
+                              return 'Please enter some text';
+                            } else if(value.trim().isEmpty){
                               return 'Please enter some text';
                             }
                             return null;
@@ -218,25 +249,38 @@ class _HomeScreenState extends State<HomeScreen> {
                           controller: lastName,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(12),
                               borderSide:
                                   const BorderSide(color: Colors.blueGrey),
                             ),
                             disabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
+                              borderRadius: BorderRadius.circular(12.0),
                               borderSide:
                                   const BorderSide(color: Colors.blueGrey),
                             ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                              borderSide: const BorderSide(
+                                  color: Colors.blueGrey, width: 1.0),
+                            ),
                             labelText: 'Last Name',
+                            labelStyle: const TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.black),
                           ),
                           keyboardType: TextInputType.emailAddress,
                           autocorrect: false,
                           textCapitalization: TextCapitalization.none,
                           validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
+                            if (value == null ) {
+                              return 'Please enter some text';
+                            } else if(value.trim().isEmpty){
                               return 'Please enter some text';
                             }
                             return null;
+                          },
+                          onChanged: (e) {
+                            setState(() {
+                              _form.currentState!.validate();
+                            });
                           },
                           // onSaved: (value){
                           //   _enteredEmail = value!;
@@ -259,9 +303,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 }
                               },
                             ),
-                            SizedBox(width: 20.0),
+                            const SizedBox(width: 20.0),
                             CustomRadioButton(
                               label: 'Female',
+
                               isSelected: !isMale,
                               onTap: () {
                                 if (isMale) {
@@ -291,25 +336,34 @@ class _HomeScreenState extends State<HomeScreen> {
                               // },
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(12),
                                   borderSide:
                                       const BorderSide(color: Colors.blueGrey),
                                 ),
                                 disabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(12.0),
                                   borderSide:
                                       const BorderSide(color: Colors.blueGrey),
                                 ),
-                                labelText: selectedDate != null
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide: const BorderSide(
+                                      color: Colors.blueGrey, width: 1.0),
+                                ),
+                               hintText: selectedDate != null
                                     ? selectedDate.toString().split(" ").first
                                     : "Date Of Birth",
+                                labelText: "Date of birth",
+                                labelStyle: const TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.black),
                                 suffixIcon: const Icon(Icons.calendar_month),
                               ),
                               keyboardType: TextInputType.emailAddress,
                               autocorrect: false,
                               textCapitalization: TextCapitalization.sentences,
                               validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
+                                if (value == null ) {
+                                  return 'Please enter some text';
+                                } else if(value.trim().isEmpty){
                                   return 'Please enter some text';
                                 }
                                 return null;
@@ -324,22 +378,29 @@ class _HomeScreenState extends State<HomeScreen> {
                           controller: other,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
+                              borderRadius: BorderRadius.circular(12.0),
                               borderSide:
                                   const BorderSide(color: Colors.blueGrey),
                             ),
                             disabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
+                              borderRadius: BorderRadius.circular(12.0),
                               borderSide:
                                   const BorderSide(color: Colors.blueGrey),
                             ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                              borderSide: const BorderSide(
+                                  color: Colors.blueGrey, width: 1.0),
+                            ),
                             labelText: 'Other',
+                            labelStyle: const TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.black),
                           ),
-                          keyboardType: TextInputType.emailAddress,
                           autocorrect: false,
                           textCapitalization: TextCapitalization.none,
                           validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
+                            if (value == null ) {
+                              return 'Please enter some text';
+                            } else if(value.trim().isEmpty){
                               return 'Please enter some text';
                             }
                             return null;
@@ -355,22 +416,30 @@ class _HomeScreenState extends State<HomeScreen> {
                           controller: occupation,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
+                              borderRadius: BorderRadius.circular(12.0),
                               borderSide:
                                   const BorderSide(color: Colors.blueGrey),
                             ),
                             disabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
+                              borderRadius: BorderRadius.circular(12.0),
                               borderSide:
                                   const BorderSide(color: Colors.blueGrey),
                             ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                              borderSide: const BorderSide(
+                                  color: Colors.blueGrey, width: 1.0),
+                            ),
                             labelText: 'Occupation',
+                            labelStyle: const TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.black),
                           ),
                           keyboardType: TextInputType.emailAddress,
                           autocorrect: false,
                           textCapitalization: TextCapitalization.none,
                           validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
+                            if (value == null ) {
+                              return 'Please enter some text';
+                            } else if(value.trim().isEmpty){
                               return 'Please enter some text';
                             }
                             return null;
@@ -390,7 +459,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () {
                     _submit();
                   },
-                  child: Text(
+                  child: const Text(
                     "Next",
                     style: TextStyle(color: Colors.white, fontSize: 20),
                   ))),
