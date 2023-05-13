@@ -197,9 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             }
                             return null;
                           },
-                          onSaved: (value) {
-                            value;
-                          },
+
                         ),
                         const SizedBox(
                           height: 18.0,
@@ -288,17 +286,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide:
-                                  const BorderSide(color: Colors.blueGrey, width: 1.0),
+                                  const BorderSide(color: AppColors.blueGrey, width: 1.0),
                             ),
                             disabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12.0),
                               borderSide:
-                                  const BorderSide(color: Colors.blueGrey,width: 1),
+                                  const BorderSide(color: AppColors.blueGrey,width: 1),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12.0),
                               borderSide: const BorderSide(
-                                  color: Colors.blueGrey, width: 1.0),
+                                  color: AppColors.blueGrey, width: 1.0),
                             ),
                            hintText: "Date of Birth",
                             labelText: "Date of Birth",
@@ -325,7 +323,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ),
                                 ),
-                                const Icon(Icons.calendar_month,color: Color(0xff00B8CD),),
+                                const Icon(Icons.calendar_month,color: AppColors.primaryColor),
                                 const SizedBox(width: 16.0)
                               ],
                             ),
