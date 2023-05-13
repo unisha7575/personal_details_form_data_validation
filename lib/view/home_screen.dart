@@ -30,8 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isMale = true;
 
   Future<void> data() async {
-    http.Response res = await http.get(Uri.parse(
-        "https://api.probusinsurance.com/api/Motor/PrivateCar/Salutation?companyCode=DIGIT"));
+    http.Response res = await http.get(Uri.parse("https://api.probusinsurance.com/api/Motor/PrivateCar/Salutation?companyCode=DIGIT"));
     setState(() {
       isLoading = false;
       loadedData = titleForDopDownFromJson(res.body);
@@ -41,8 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
           salutationList.add(loadedData!.response[i].name);
         }
       }
-      debugPrint("Line23 ${loadedData?.statusCode}");
-      debugPrint("Line24 ${loadedData?.response[0].name}");
+      debugPrint("Line43 ${loadedData?.statusCode}");
+      debugPrint("Line44 ${loadedData?.response[0].name}");
     });
   }
 
@@ -355,7 +354,32 @@ class _HomeScreenState extends State<HomeScreen> {
                                     : "Date Of Birth",
                                 labelText: "Date of birth",
                                 labelStyle: const TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.black),
-                                suffixIcon: const Icon(Icons.calendar_month),
+                                suffixIcon: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                      child: (selectedDate==null)?const SizedBox.shrink():Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(16.0),
+                                          color: Colors.blueGrey[100]
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
+                                          child: Text(
+                                            '${DateTime.now().year - selectedDate!.year}' "${(DateTime.now().year - selectedDate!.year)>1 ? ' Years':' Year'}",style: const TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 13
+                                          ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const Icon(Icons.calendar_month,color: Color(0xff00B8CD),),
+                                    const SizedBox(width: 16.0)
+                                  ],
+                                ),
                               ),
                               keyboardType: TextInputType.emailAddress,
                               autocorrect: false,
@@ -405,9 +429,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             }
                             return null;
                           },
-                          // onSaved: (value){
-                          //   _enteredEmail = value!;
-                          // },
+
                         ),
                         const SizedBox(
                           height: 15,
@@ -459,6 +481,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () {
                     _submit();
                   },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: const Color(0xff00B8CD),
+                    backgroundColor: (_form.currentState!.validate())?const Color(0xff00B8CD):Colors.grey[400]
+                  ),
                   child: const Text(
                     "Next",
                     style: TextStyle(color: Colors.white, fontSize: 20),

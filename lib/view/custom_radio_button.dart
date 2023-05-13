@@ -33,7 +33,7 @@ class CustomRadioButton extends StatelessWidget {
                     color: isSelected?const Color(0xff00B8CD):Colors.blueGrey,
                   ),
                   const SizedBox(width: 15),
-                  Text(label, style: TextStyle(
+                  Text(label, style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),),
