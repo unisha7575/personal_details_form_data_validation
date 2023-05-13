@@ -4,18 +4,18 @@
 
 import 'dart:convert';
 
-TitleForDopDown titleForDopDownFromJson(String str) => TitleForDopDown.fromJson(json.decode(str));
+TitleForDropDown titleForDopDownFromJson(String str) => TitleForDropDown.fromJson(json.decode(str));
 
-String titleForDopDownToJson(TitleForDopDown data) => json.encode(data.toJson());
+String titleForDropDownToJson(TitleForDropDown data) => json.encode(data.toJson());
 
-class TitleForDopDown {
+class TitleForDropDown {
   dynamic error;
   bool isAuthenticated;
   dynamic message;
   List<Response> response;
   int statusCode;
 
-  TitleForDopDown({
+  TitleForDropDown({
     this.error,
     required this.isAuthenticated,
     this.message,
@@ -23,7 +23,7 @@ class TitleForDopDown {
     required this.statusCode,
   });
 
-  factory TitleForDopDown.fromJson(Map<String, dynamic> json) => TitleForDopDown(
+  factory TitleForDropDown.fromJson(Map<String, dynamic> json) => TitleForDropDown(
     error: json["Error"],
     isAuthenticated: json["IsAuthenticated"],
     message: json["Message"],

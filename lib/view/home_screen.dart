@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:user_form_validation/constants/app_colors.dart';
 
-import '../modal.dart';
+import '../api_data_modal.dart';
 import '../personal_detail_data.dart';
 import 'custom_radio_button.dart';
 
@@ -25,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime? selectedDate;
   late String dropdownValue;
   bool isLoading = true;
-  TitleForDopDown? loadedData;
+  TitleForDropDown? loadedData;
   List<String> salutationList = <String>[];
   bool isMale = true;
 
@@ -33,15 +34,15 @@ class _HomeScreenState extends State<HomeScreen> {
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12.0),
       borderSide:
-      const BorderSide(color: Colors.blueGrey, width: 1),
+      const BorderSide(color: AppColors.blueGrey, width: 1),
     ),
     disabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12.0),
-      borderSide: const BorderSide(color: Colors.blueGrey,width: 1),
+      borderSide: const BorderSide(color: AppColors.blueGrey,width: 1),
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12.0),
-      borderSide: const BorderSide(color: Colors.blueGrey, width: 1.0),
+      borderSide: const BorderSide(color: AppColors.blueGrey, width: 1.0),
     ),
   );
 
@@ -77,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
               return Theme(
                   data: ThemeData().copyWith(
                       colorScheme: const ColorScheme.light(
-                    primary: Color(0xff00B8CD),
+                    primary: AppColors.primaryColor,
                   )),
                   child: child!);
             },
@@ -127,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
             title: const Text("Personal Detail",
-                style: TextStyle(color: Colors.white, fontSize: 24)),
+                style: TextStyle(color: AppColors.white, fontSize: 24)),
           ),
           body: (isLoading)
               ? Center(
@@ -153,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         Container(
                           decoration: BoxDecoration(
-                              border: Border.all(color: Colors.blueGrey),
+                              border: Border.all(color: AppColors.blueGrey),
                               borderRadius: BorderRadius.circular(12.0)),
                           child: Padding(
                             padding: const EdgeInsets.only(
@@ -397,12 +398,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     _submit();
                   },
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: const Color(0xff00B8CD),
-                    backgroundColor: ((_form.currentState?.validate()??false) && dateOfBirth.text.isNotEmpty)?const Color(0xff00B8CD):Colors.grey[400]
+                    foregroundColor: AppColors.primaryColor,
+                    backgroundColor: ((_form.currentState?.validate()??false) && dateOfBirth.text.isNotEmpty)? AppColors.primaryColor:AppColors.grey.withOpacity(0.7)
                   ),
                   child: const Text(
                     "Next",
-                    style: TextStyle(color: Colors.white, fontSize: 20),
+                    style: TextStyle(color: AppColors.white, fontSize: 20),
                   ))),
         ),
       ),

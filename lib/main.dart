@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:user_form_validation/constants/app_colors.dart';
 import 'package:user_form_validation/view/home_screen.dart';
 
 void main() {
@@ -13,17 +14,17 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    MaterialColor mainAppColor = const MaterialColor(0xFF00B8CD, <int, Color>{
-      50:  Color(0xff00B8CD),
-      100: Color(0xff00B8CD),
-      200: Color(0xff00B8CD),
-      300: Color(0xff00B8CD),
-      400: Color(0xff00B8CD),
-      500: Color(0xff00B8CD),
-      600: Color(0xff00B8CD),
-      700: Color(0xff00B8CD),
-      800: Color(0xff00B8CD),
-      900: Color(0xff00B8CD),
+    MaterialColor mainAppColor =  const MaterialColor(0xff00B8CD, <int, Color>{
+      50:  AppColors.primaryColor,
+      100: AppColors.primaryColor,
+      200: AppColors.primaryColor,
+      300: AppColors.primaryColor,
+      400: AppColors.primaryColor,
+      500: AppColors.primaryColor,
+      600: AppColors.primaryColor,
+      700: AppColors.primaryColor,
+      800: AppColors.primaryColor,
+      900: AppColors.primaryColor,
     });
     return MaterialApp(
       debugShowCheckedModeBanner: false,

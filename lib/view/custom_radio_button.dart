@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constants/app_colors.dart';
+
 class CustomRadioButton extends StatelessWidget {
   final String label;
   final bool isSelected;
@@ -21,7 +23,7 @@ class CustomRadioButton extends StatelessWidget {
             height: 55,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.blueGrey),
+              border: Border.all(color: AppColors.blueGrey),
             ),
             child: Padding(
               padding: const EdgeInsets.only(left: 15),
@@ -30,7 +32,7 @@ class CustomRadioButton extends StatelessWidget {
                 children: [
                   Icon(
                     isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                    color: isSelected?const Color(0xff00B8CD):Colors.blueGrey,
+                    color: isSelected? AppColors.primaryColor: AppColors.blueGrey,
                   ),
                   const SizedBox(width: 15),
                   Text(label, style: const TextStyle(
